@@ -1,0 +1,2 @@
+const DEFAULT_LIMIT = 10;
+const MAX_LIMIT = 50;

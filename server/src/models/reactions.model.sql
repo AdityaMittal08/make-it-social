@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS likes (
+  post_id INT REFERENCES posts(post_id) ON DELETE CASCADE,
+  liked_by INT REFERENCES users(user_id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  
+  PRIMARY KEY (post_id, liked_by)
+);

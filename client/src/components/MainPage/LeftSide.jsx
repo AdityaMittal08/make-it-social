@@ -3,25 +3,25 @@ import { Home, Compass, PlusCircle, Maximize2 } from "lucide-react"
 export function LeftSide(){
   return (
     <>
-        <div className="border-r-4 border-black pr-4 pt-2 w-[500px] h-full overflow-y-auto">
+        <div className="border-r-4 border-black pr-4 pt-2 h-full overflow-y-auto">
           <div className="border-[5px] rounded-[25px] bg-[#C3F0CA] border-black p-3 font-display">
             <div className="flex relative p-2 border bg-[#1E293B] rounded-[25px]">
-              <Home className="h-[40px] w-[40px] text-[#FDF6E3] m-1" />
-              <p className="text-[32px] font-bold text-[#FDF6E3] m-1">Home</p>
+              <Home className="h-[36px] w-[36px] text-[#FDF6E3] m-1" />
+              <p className="text-[24px] font-bold text-[#FDF6E3] m-1">Home</p>
             </div>
             <div className="flex relative p-2">
-              <Compass className="h-[40px] w-[40px] m-1"/>
-              <p className="text-[32px] font-bold m-1">Explore</p>
+              <Compass className="h-[36px] w-[36px] m-1"/>
+              <p className="text-[24px] font-bold m-1">Explore</p>
             </div>
             <div className="flex relative p-2">
-              <PlusCircle className="h-[40px] w-[40px] m-1"/>
-              <p className="text-[32px] font-bold m-1">Create</p>
+              <PlusCircle className="h-[36px] w-[36px] m-1"/>
+              <p className="text-[24px] font-bold m-1">Create</p>
             </div>
           </div>
 
           <div className="border-[5px] rounded-[25px] bg-[#FFDD88] border-black mt-[8px] p-3 font-display">
             <div className="flex justify-center">
-              <p className="text-[32px] font-bold">RECENT</p>
+              <p className="text-[24px] font-bold">RECENT</p>
             </div>
 
             <hr className="my-2 h-px border-t-0 bg-black"/>
