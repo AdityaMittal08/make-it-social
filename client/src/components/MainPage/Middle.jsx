@@ -1,4 +1,4 @@
-import { Circle, Bell, ThumbsUp, ThumbsDown, MessageSquareTextIcon, Share2 } from "lucide-react"
+import { Circle, Bell, ThumbsUp, ThumbsDown, MessageCircle, Share2 } from "lucide-react"
 import './RightSide.css';
 
 export function Middle(){
@@ -29,7 +29,7 @@ export function Middle(){
                 <ThumbsDown className="h-6 w-6" />
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
-                <MessageSquareTextIcon className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6" />
                 <p className="text-lg font-bold">100</p>
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
@@ -63,7 +63,7 @@ export function Middle(){
                 <ThumbsDown className="h-6 w-6" />
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
-                <MessageSquareTextIcon className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6" />
                 <p className="text-lg font-bold">19</p>
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
@@ -97,7 +97,7 @@ export function Middle(){
                 <ThumbsDown className="h-6 w-6" />
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
-                <MessageSquareTextIcon className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6" />
                 <p className="text-lg font-bold">1.4K</p>
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
@@ -131,7 +131,7 @@ export function Middle(){
                 <ThumbsDown className="h-6 w-6" />
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
-                <MessageSquareTextIcon className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6" />
                 <p className="text-lg font-bold">3.7K</p>
               </div>
               <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer">
