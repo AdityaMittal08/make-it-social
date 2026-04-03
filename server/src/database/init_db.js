@@ -12,6 +12,7 @@ async function initializeDatabase() {
 
     const executionOrder = [
       'users.model.sql',
+      'refresh_tokens.model.sql',
       'posts.model.sql',
       'follows.model.sql',
       'comment.model.sql',
