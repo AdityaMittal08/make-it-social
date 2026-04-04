@@ -6,18 +6,17 @@ const rateLimit = require('express-rate-limit');
 const pool = require('./src/config/db');
 require('dotenv').config();
 
+const authRoutes = require('./src/routes/auth.routes');
+
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true
+}));
 
-app.get('/users', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM users');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
+app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

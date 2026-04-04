@@ -1,13 +1,9 @@
-const express = require('express');
-const app = express();
 const asyncHandler = require('../utils/asyncHandler')
-const bcrypt = require('bcrypt');
 const pool = require('../config/db.js')
-const comparePassword = require('../utils/hashPassword')
-const hashPassword = require('../utils/hashPassword')
+const { comparePassword, hashPassword } = require('../utils/hashPassword')
 const { generateAccessToken, generateRefreshToken, refreshTokenCookieOptions, verifyToken } = require('../utils/generateToken');
 
-app.post('/register', asyncHandler(async(req, res) => {
+const register = asyncHandler(async(req, res) => {
   try {
     const {username, email, password} = req.body;
     
@@ -30,7 +26,7 @@ app.post('/register', asyncHandler(async(req, res) => {
       return res.status(400).json({error: "User already exists"})
     }
 
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = await hashPassword(password);
 
     const result = await pool.query(
       "INSERT INTO users (username, email, hashedPassword) VALUES ($1, $2, $3) RETURNING *", [username, email, hashedPassword]
@@ -40,9 +36,9 @@ app.post('/register', asyncHandler(async(req, res) => {
   }catch(err){
     res.status(500).json({ error: "Registration failed"});
   }
-}))
+});
 
-app.post('/login', asyncHandler(async(req, res) => {
+const login = asyncHandler(async(req, res) => {
   try{
     const {userId, password} = req.body;
     
@@ -63,7 +59,7 @@ app.post('/login', asyncHandler(async(req, res) => {
     }
 
     const user = userResult.rows[0];
-    const checkPassword = comparePassword(user.hashedPassword, password)
+    const checkPassword = await comparePassword(password, user.hashedPassword);
     
     if(!checkPassword){
       return res.status(400).json({error: "Invalid userId or password"})
@@ -78,9 +74,9 @@ app.post('/login', asyncHandler(async(req, res) => {
   }catch(err){
     return res.status(500).json({error: "Login Failed"})
   }
-}))
+});
 
-app.get('/refresh', asyncHandler(async(req, res) => {
+const refresh = asyncHandler(async(req, res) => {
   const cookies = req.cookies;
 
   if(!cookies?.jwt){
@@ -108,4 +104,10 @@ app.get('/refresh', asyncHandler(async(req, res) => {
   }catch(err){
     return res.status(403).json({ message: "Forbidden"})
   }
-}))
+});
+
+module.exports = {
+  register,
+  login,
+  refresh
+};
