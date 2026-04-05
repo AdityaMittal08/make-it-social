@@ -4,7 +4,7 @@ import './RightSide.css';
 export function RightSide(){
   return (
     <>
-        <div className="border-l-4 border-black pl-4 pt-2 ml-auto h-full overflow-y-auto font-display scroll-left">
+        <div className="w-[350px] border-l-4 border-black pl-4 pt-2 ml-auto h-full overflow-y-auto font-display scroll-left">
           <div className="border-[5px] rounded-[50px] bg-[#FFAA8C] border-black p-3 flex-col">
             <div className="flex m-2 pb-4">
               <Circle className="h-[50px] w-[50px] m-2 mb-0"/>

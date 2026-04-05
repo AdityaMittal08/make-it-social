@@ -4,7 +4,7 @@ import './RightSide.css';
 export function Middle(){
   return (
     <>
-        <div className="p-6 pt-1 h-full w-screen overflow-y-auto font-display scroll-left">
+        <div className="flex-1 p-6 pt-1 h-full overflow-y-auto font-display scroll-left">
           <div className="border-[5px] rounded-[35px] bg-[#FD7EAF] border-black mt-[8px] p-4 font-display">
             <div className="flex m-2 mt-0 mb-0 pb-2 justify-between">
               <div className="flex">

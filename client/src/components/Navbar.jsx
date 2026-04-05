@@ -1,4 +1,5 @@
 import { Search, Mic } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export function Navbar(){
   return (
@@ -10,7 +11,9 @@ export function Navbar(){
               <Search className="absolute top-[15px] left-[17px] h-[38px] w-[38px]"/>
               <Mic className="absolute right-[15px] top-[17px] h-[38px] w-[38px]" />
           </div>
-          <button className="text-[24px] border-4 border-black p-2 rounded-[25px] text-white bg-[#FF6B6B] font-bold">Log out</button>
+          <Link to='/login'>
+            <button className="text-[24px] border-4 border-black p-2 rounded-[25px] text-white bg-[#FF6B6B] font-bold">Log out</button>
+          </Link>
       </div>
     </>
   )

@@ -26,10 +26,10 @@ export function LeftSide(){
               <Compass className={getIconClasses("/explore")}/>
               <p className={getTextClasses("/explore")}>Explore</p>
             </Link>
-            <div className={getLinkContainerClasses("/create")}>
+            <Link to='/create' className={getLinkContainerClasses("/create")}>
               <PlusCircle className={getIconClasses("/create")}/>
               <p className={getTextClasses("/create")}>Create</p>
-            </div>
+            </Link>
           </div>
 
           <div className="border-[5px] rounded-[25px] bg-[#FFDD88] border-black mt-[8px] p-3 font-display">

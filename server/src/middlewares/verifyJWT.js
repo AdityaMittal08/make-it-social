@@ -26,6 +26,6 @@ const verifyJWT = (req, res, next) => {
     }
     return res.status(403).json({ message: 'Forbidden: Invalid token' });
   }
-};
+} ;
 
 module.exports = verifyJWT;

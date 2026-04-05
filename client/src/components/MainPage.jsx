@@ -4,7 +4,7 @@ import { RightSide } from "./MainPage/RightSide";
 
 export function MainPage(){
   return (
-    <div className="flex flex-1 bg-white h-full w-full overflow-hidden">
+    <div className="flex h-full w-full overflow-hidden bg-[#FDF6E3]">
       <Middle />
       <RightSide />
     </div>
