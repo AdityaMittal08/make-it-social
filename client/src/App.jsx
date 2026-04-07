@@ -4,9 +4,8 @@ import { Navbar } from "./components/Navbar";
 import { LeftSide } from "./components/LeftSide";
 import { ExplorePage } from "./components/ExplorePage";
 import { CreatePage } from "./components/CreatePage";
-import { LoginPage } from "./auth/LoginPage";
-import { SignupPage } from "./auth/SignupPage";
-
+import { LoginPage } from "./components/AuthPage/LoginPage";
+import { SignupPage } from "./components/AuthPage/SignupPage";import { ProfilePage } from "./components/ProfilePage";
 function MainLayout() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -28,6 +27,7 @@ export default function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/create" element={<CreatePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
       
       <Route path="/login" element={<LoginPage />} />

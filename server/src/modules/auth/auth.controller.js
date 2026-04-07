@@ -4,9 +4,9 @@ const { refreshTokenCookieOptions } = require('../../utils/generateToken');
 
 
 const register = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const {first_name, last_name, username, email, password } = req.body;
   
-  const newUser = await registerUser(username, email, password);
+  const newUser = await registerUser(first_name, last_name, username, email, password);
 
   res.status(201).json({
     status: 'success',

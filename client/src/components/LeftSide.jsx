@@ -1,4 +1,4 @@
-import { Home, Compass, PlusCircle, Maximize2, Menu } from "lucide-react"
+import { Home, Compass, PlusCircle, UserCircle } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
 export function LeftSide(){
@@ -29,6 +29,10 @@ export function LeftSide(){
             <Link to='/create' className={getLinkContainerClasses("/create")}>
               <PlusCircle className={getIconClasses("/create")}/>
               <p className={getTextClasses("/create")}>Create</p>
+            </Link>
+            <Link to='/profile' className={getLinkContainerClasses("/profile")}>
+              <UserCircle className={getIconClasses("/profile")}/>
+              <p className={getTextClasses("/profile")}>Profile</p>
             </Link>
           </div>
 

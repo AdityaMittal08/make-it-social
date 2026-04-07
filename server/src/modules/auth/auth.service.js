@@ -3,9 +3,9 @@ const { comparePassword, hashPassword } = require('../../utils/hashPassword');
 const { generateAccessToken, generateRefreshToken, verifyToken } = require('../../utils/generateToken');
 const AppError = require('../../utils/AppError');
 
-const registerUser = async (username, email, password) => {
-  if (!username || !email || !password) {
-    throw new AppError('Username, email, and password are required', 400);
+const registerUser = async (first_name, last_name, username, email, password) => {
+  if (!username || !email || !password || !first_name || !last_name) {
+    throw new AppError('All the fields are required', 400);
   }
 
   const userAlreadyExists = await pool.query(
@@ -19,8 +19,8 @@ const registerUser = async (username, email, password) => {
 
   const hashedPassword = await hashPassword(password);
   const result = await pool.query(
-    "INSERT INTO users (username, email, hashedPassword) VALUES ($1, $2, $3) RETURNING user_id AS id, username, email, role_manage AS role", 
-    [username, email, hashedPassword]
+    "INSERT INTO users (first_name, last_name, username, email, hashedPassword) VALUES ($1, $2, $3, $4, $5) RETURNING user_id AS id, username, email, role_manage AS role", 
+    [first_name, last_name, username, email, hashedPassword]
   );
 
   return result.rows[0];
