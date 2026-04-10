@@ -6,6 +6,7 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 const ACCESS_TOKEN_EXPIRY  = process.env.ACCESS_TOKEN_EXPIRY  || '15m';
 const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || '7d';
+const ACCESS_TOKEN_COOKIE_MAX_AGE_MS = Number(process.env.ACCESS_TOKEN_COOKIE_MAX_AGE_MS) || 15 * 60 * 1000;
 
 if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
   throw new Error(
@@ -59,15 +60,30 @@ const verifyToken = (token, type = 'access') => {
       throw new AppError('Invalid token. Please login again', 401);
     }
 
+const accessTokenCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: 15*60*1000,
+});
+
     throw new AppError('Token verification failed.', 401);
   }
 };
 
 const refreshTokenCookieOptions = () => ({
+  accessTokenCookieOptions,
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict',
   maxAge: 7*24*60*60*1000,
+});
+
+const accessTokenCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: ACCESS_TOKEN_COOKIE_MAX_AGE_MS,
 });
 
 
@@ -76,4 +92,5 @@ module.exports = {
   generateRefreshToken,
   verifyToken,
   refreshTokenCookieOptions,
+  accessTokenCookieOptions,
 };
