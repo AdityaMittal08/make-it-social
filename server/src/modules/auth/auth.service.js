@@ -1,7 +1,32 @@
 const pool = require('../../config/db');
+const crypto = require('crypto');
 const { comparePassword, hashPassword } = require('../../utils/hashPassword');
 const { generateAccessToken, generateRefreshToken, verifyToken } = require('../../utils/generateToken');
 const AppError = require('../../utils/AppError');
+
+const hashRefreshToken = (token) =>
+  crypto.createHash('sha256').update(token).digest('hex');
+
+const getRefreshTokenExpiryDate = (refreshToken) => {
+  const decoded = verifyToken(refreshToken, 'refresh');
+
+  if (!decoded?.exp) {
+    throw new AppError('Invalid refresh token payload', 401);
+  }
+
+  return new Date(decoded.exp * 1000);
+};
+
+const storeRefreshToken = async (db, { userId, refreshToken }) => {
+  const tokenHash = hashRefreshToken(refreshToken);
+  const expiresAt = getRefreshTokenExpiryDate(refreshToken);
+
+  await db.query(
+    `INSERT INTO refresh_tokens (user_id, token_hash, is_revoked, expires_at)
+     VALUES ($1, $2, FALSE, $3)`,
+    [userId, tokenHash, expiresAt]
+  );
+};
 
 const registerUser = async (first_name, last_name, username, email, password) => {
   if (!username || !email || !password || !first_name || !last_name) {
@@ -50,6 +75,11 @@ const loginUser = async (userId, password) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
+  await storeRefreshToken(pool, {
+    userId: user.id,
+    refreshToken,
+  });
+
   return { accessToken, refreshToken, user: { id: user.id, username: user.username, role: user.role } };
 };
 
@@ -59,20 +89,64 @@ const refreshUserToken = async (refreshToken) => {
   }
 
   const decoded = verifyToken(refreshToken, 'refresh');
+  const tokenHash = hashRefreshToken(refreshToken);
+  const client = await pool.connect();
 
-  const userResult = await pool.query(
-    "SELECT user_id AS id, username, role_manage AS role FROM users WHERE user_id = $1", 
-    [decoded.sub]
-  );
+  try {
+    await client.query('BEGIN');
 
-  if (userResult.rows.length === 0) {
-    throw new AppError('User not found', 401);
+    const tokenResult = await client.query(
+      `SELECT id, user_id, is_revoked, expires_at
+       FROM refresh_tokens
+       WHERE token_hash = $1
+       LIMIT 1`,
+      [tokenHash]
+    );
+    
+    if (tokenResult.rows.length === 0) {
+      throw new AppError('Unauthorized, refresh token not recognized', 401);
+    }
+
+    const existingToken = tokenResult.rows[0];
+
+    if (Number(existingToken.user_id) !== Number(decoded.sub)) {
+      throw new AppError('Unauthorized, token subject mismatch', 401);
+    }
+
+    if (existingToken.is_revoked || new Date(existingToken.expires_at) <= new Date()) {
+      await client.query('UPDATE refresh_tokens SET is_revoked = TRUE WHERE id = $1', [existingToken.id]);
+      throw new AppError('Unauthorized, refresh token is expired or revoked', 401);
+    }
+
+    const userResult = await client.query(
+      'SELECT user_id AS id, username, role_manage AS role FROM users WHERE user_id = $1',
+      [decoded.sub]
+    );
+
+    if (userResult.rows.length === 0) {
+      throw new AppError('User not found', 401);
+    }
+
+    const user = userResult.rows[0];
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+
+    await client.query('UPDATE refresh_tokens SET is_revoked = TRUE WHERE id = $1', [existingToken.id]);
+
+    await storeRefreshToken(client, {
+      userId: user.id,
+      refreshToken: newRefreshToken,
+    });
+
+    await client.query('COMMIT');
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
   }
-
-  const user = userResult.rows[0];
-  const newAccessToken = generateAccessToken(user);
-
-  return { accessToken: newAccessToken };
 };
 
 module.exports = {

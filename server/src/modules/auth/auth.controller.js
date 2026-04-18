@@ -1,7 +1,7 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const { registerUser, loginUser, refreshUserToken } = require('./auth.service');
 const { refreshTokenCookieOptions, accessTokenCookieOptions } = require('../../utils/generateToken');
-
+const REFRESH_COOKIE_NAME = 'refreshToken';
 
 const register = asyncHandler(async (req, res) => {
   const {first_name, last_name, username, email, password } = req.body;
@@ -19,7 +19,7 @@ const login = asyncHandler(async (req, res) => {
   
   const { accessToken, refreshToken, user } = await loginUser(userId, password);
 
-  res.cookie('jwt', refreshToken, refreshTokenCookieOptions());
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshTokenCookieOptions());
   res.cookie('accessToken', accessToken, accessTokenCookieOptions());
 
   res.status(200).json({
@@ -31,12 +31,13 @@ const login = asyncHandler(async (req, res) => {
 const refresh = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
   
-  if (!cookies?.jwt) {
+  if (!cookies?.[REFRESH_COOKIE_NAME]) {
     return res.status(401).json({ status: 'fail', message: 'Unauthorized' });
   }
 
-  const { accessToken } = await refreshUserToken(cookies.jwt);
+  const { accessToken, refreshToken } = await refreshUserToken(cookies[REFRESH_COOKIE_NAME]);
 
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshTokenCookieOptions());
   res.cookie('accessToken', accessToken, accessTokenCookieOptions());
 
   res.status(200).json({

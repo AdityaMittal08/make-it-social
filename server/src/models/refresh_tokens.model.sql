@@ -4,9 +4,7 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
   token_hash VARCHAR(255) NOT NULL UNIQUE,
   is_revoked BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
-  expires_at TIMESTAMP NOT NULL,
-  ip_address VARCHAR(100),
-  user_agent TEXT
+  expires_at TIMESTAMP NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
