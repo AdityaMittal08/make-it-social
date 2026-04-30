@@ -1,11 +1,16 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 import { MainPage } from "./components/MainPage";
+import { GuestMainPage } from "./components/GuestMainPage";
 import { Navbar } from "./components/Navbar";
 import { LeftSide } from "./components/LeftSide";
 import { ExplorePage } from "./components/ExplorePage";
 import { CreatePage } from "./components/CreatePage";
 import { LoginPage } from "./components/AuthPage/LoginPage";
-import { SignupPage } from "./components/AuthPage/SignupPage";import { ProfilePage } from "./components/ProfilePage";
+import { SignupPage } from "./components/AuthPage/SignupPage";
+import { ProfilePage } from "./components/ProfilePage";
+import ProtectedRoutes from "./components/ProtectedAuth/ProtectedRoutes";
+import { useAuth } from "./context/AuthContext";
+
 function MainLayout() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -21,13 +26,24 @@ function MainLayout() {
 }
 
 export default function App() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route path="/" element={<MainPage />} />
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <MainPage /> : <GuestMainPage />} 
+        />
         <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/create" element={<CreatePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/create" element={<CreatePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
       </Route>
       
       <Route path="/login" element={<LoginPage />} />

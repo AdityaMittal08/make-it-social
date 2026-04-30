@@ -2,8 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { authApi } from "../../api/authApi";
+import { useAuth } from "../../context/AuthContext";
+
 export function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     userId: "",
@@ -27,10 +30,14 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      await authApi.login({
+      const response = await authApi.login({
         userId: formData.userId,
         password: formData.password,
       });
+
+      if (response.data && response.data.user) {
+        login(response.data.user);
+      }
 
       navigate("/");
     } catch (err) {

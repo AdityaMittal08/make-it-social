@@ -1,23 +1,38 @@
 import { Link } from "react-router-dom"
 import { Circle, Bell } from "lucide-react"
+import { useAuth } from "../../../context/AuthContext"
 
 export function UserProfile(){
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="border-[5px] rounded-[50px] bg-[#FFAA8C] border-black p-6 text-center">
+        <p className="font-bold text-[24px]">Welcome!</p>
+        <p className="font-bold text-[18px] mt-2 mb-4">Please log in to see your profile.</p>
+        <Link to="/login" className="bg-white px-6 py-2 rounded-full font-bold border-2 border-black">
+          Log in
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="border-[5px] rounded-[50px] bg-[#FFAA8C] border-black p-3 flex-col">
       <div className="flex m-2 pb-4">
         <Circle className="h-[50px] w-[50px] m-2 mb-0"/>
         <div className="relative">
-          <Link to='/profile' className="font-bold text-[36px] m-2 mt-0 mb-0">Karishma</Link>
-          <p className="absolute top-[50px] font-bold left-[10px]">178K followers</p>
+          <Link to='/profile' className="font-bold text-[36px] m-2 mt-0 mb-0">{user.username}</Link>
+          <p className="absolute top-[50px] font-bold left-[10px]">0 followers</p>
         </div>
       </div>
       <div className="flex justify-between">
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">58 Following</p>
+          <p className="font-bold text-[20px] leading-[36px]">0 Following</p>
         </div>
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">25 Posts</p>
+          <p className="font-bold text-[20px] leading-[36px]">0 Posts</p>
         </div>
       </div>
       <div className="flex-col m-2">
