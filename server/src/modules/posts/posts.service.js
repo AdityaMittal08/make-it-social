@@ -44,7 +44,39 @@ const deletePost = async (postId, userId) => {
   await pool.query('DELETE FROM posts WHERE post_id = $1', [postId]);
 };
 
+const getPostById = async (postId) => {
+  const postResult = await pool.query('SELECT * FROM posts WHERE post_id = $1', [postId]);
+
+  if(postResult.rows.length === 0){
+    throw new AppError('Post does not exist!', 404);
+  }
+
+  return postResult.rows[0];
+}
+
+const getAllPostsFeed = async () => {
+  const query = `
+    SELECT p.*, u.username, u.first_name, u.last_name
+    FROM posts p
+    JOIN users u ON p.owner_id = u.user_id
+  `;
+  const postResult = await pool.query(query);
+
+  return postResult.rows;
+}
+
+const getAllPostsUser = async (userId) => {
+  const query = `SELECT * FROM posts WHERE owner_id = $1`;
+
+  const postResult = await pool.query(query, [userId]);
+
+  return postResult.rows;
+}
+
 module.exports = {
   createPost,
-  deletePost
+  deletePost,
+  getAllPostsFeed,
+  getAllPostsUser,
+  getPostById
 };

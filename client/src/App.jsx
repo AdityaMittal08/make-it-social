@@ -42,7 +42,7 @@ export default function App() {
         <Route path="/explore" element={<ExplorePage />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/create" element={<CreatePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/:username" element={<ProfilePage />} />
         </Route>
       </Route>
       

@@ -1,13 +1,53 @@
 import { Link } from "react-router-dom"
 import { Circle, Bell } from "lucide-react"
 import { useAuth } from "../../../context/AuthContext"
+import { usersApi } from "../../../api/usersApi";
+import { useState, useEffect } from "react";
 
 export function UserProfile(){
   const { user } = useAuth();
 
+  const [profileData, setProfileData] = useState({
+      username: "",
+      followersCount: 0,
+      followingCount: 0,
+      postsCount: 0,
+    });
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        if (user?.id) {
+          const response = await usersApi.fetchUserById(user.id);
+          if (response?.data?.userData) {
+            setProfileData((prev) => ({
+              ...prev,
+              ...response.data.userData
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (user?.id) {
+      fetchProfile();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return <div className="text-center font-bold text-xl mb-8">Loading profile...</div>;
+  }
+  
   if (!user) {
     return (
-      <div className="border-[5px] rounded-[50px] bg-[#FFAA8C] border-black p-6 text-center">
+      <div className="border-[25px] rounded-[50px] bg-[#FFAA8C] border-black p-6 text-center">
         <p className="font-bold text-[24px]">Welcome!</p>
         <p className="font-bold text-[18px] mt-2 mb-4">Please log in to see your profile.</p>
         <Link to="/login" className="bg-white px-6 py-2 rounded-full font-bold border-2 border-black">
@@ -17,22 +57,23 @@ export function UserProfile(){
     );
   }
 
+
   return (
     <>
       <div className="border-[5px] rounded-[50px] bg-[#FFAA8C] border-black p-3 flex-col">
       <div className="flex m-2 pb-4">
         <Circle className="h-[50px] w-[50px] m-2 mb-0"/>
         <div className="relative">
-          <Link to='/profile' className="font-bold text-[36px] m-2 mt-0 mb-0">{user.username}</Link>
-          <p className="absolute top-[50px] font-bold left-[10px]">0 followers</p>
+          <Link to={`/${user.username}`} className="font-bold text-[36px] m-2 mt-0 mb-0">{user.username}</Link>
+          <p className="absolute top-[50px] font-bold left-[10px]">{profileData.followersCount} followers</p>
         </div>
       </div>
       <div className="flex justify-between">
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">0 Following</p>
+          <p className="font-bold text-[20px] leading-[36px]">{profileData.followingCount} Following</p>
         </div>
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">0 Posts</p>
+          <p className="font-bold text-[20px] leading-[36px]">{profileData.postsCount} Posts</p>
         </div>
       </div>
       <div className="flex-col m-2">

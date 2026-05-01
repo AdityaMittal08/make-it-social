@@ -7,9 +7,12 @@ const router = express.Router();
 router.use(verifyJWT);
 
 router.route('/')
-  .get(postsController.getAllPosts)
-  .post(postsController.createPost);
+  .get(postsController.getAllPostsUser)
+  .post(postsController.createPost)
 
+router.route('/home')
+  .get(postsController.getAllPostsFeed)
+  
 router.route('/:postId')
   .get(postsController.getPostById)
   .delete(postsController.deletePost);

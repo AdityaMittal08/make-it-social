@@ -6,8 +6,13 @@ export const postsApi = {
     return response.data;
   },
 
-  getAllPosts: async () => {
+  getAllPostsUser: async () => {
     const response = await api.get('/posts/');
+    return response.data;
+  },
+
+  getAllPostsFeed: async () => {
+    const response = await api.get('/posts/home');
     return response.data;
   },
 

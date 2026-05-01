@@ -27,7 +27,39 @@ const deletePost = asyncHandler(async (req, res) => {
   });
 });
 
+const getPostById = asyncHandler(async (req, res) => {
+  const { postId } = req.params;
+  const post = await postsService.getPostById(postId);
+
+  res.status(200).json({
+    status: 'success',
+    data: { post }
+  });
+});
+const getAllPostsUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const posts = await postsService.getAllPostsUser(userId);
+
+  res.status(200).json({
+    status: 'success',
+    data: { posts }
+  });
+});
+
+const getAllPostsFeed = asyncHandler(async(req, res) => {
+  const posts = await postsService.getAllPostsFeed();
+
+  res.status(200).json({
+    status: 'success',
+    data: { posts }
+  })
+})
+
+
 module.exports = {
   createPost,
-  deletePost
+  deletePost,
+  getPostById,
+  getAllPostsUser,
+  getAllPostsFeed
 };

@@ -1,8 +1,10 @@
 import { Home, Compass, PlusCircle, UserCircle } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
+import { useAuth } from "../context/AuthContext";
 
 export function LeftSide(){
   const location = useLocation();
+  const { user } = useAuth();
 
   const getLinkContainerClasses = (path) => {
     const isActive = location.pathname === path;
@@ -30,9 +32,9 @@ export function LeftSide(){
               <PlusCircle className={getIconClasses("/create")}/>
               <p className={getTextClasses("/create")}>Create</p>
             </Link>
-            <Link to='/profile' className={getLinkContainerClasses("/profile")}>
-              <UserCircle className={getIconClasses("/profile")}/>
-              <p className={getTextClasses("/profile")}>Profile</p>
+            <Link to={user ? `/${user.username}` : '#'} className={getLinkContainerClasses(user ? `/${user.username}` : "/profile")}>
+              <UserCircle className={getIconClasses(user ? `/${user.username}` : "/profile")}/>
+              <p className={getTextClasses(user ? `/${user.username}` : "/profile")}>Profile</p>
             </Link>
           </div>
 
