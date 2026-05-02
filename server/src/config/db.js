@@ -16,4 +16,8 @@ pool.connect((err, client, release) => {
     release();
 })
 
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err);
+});
+
 module.exports = pool;

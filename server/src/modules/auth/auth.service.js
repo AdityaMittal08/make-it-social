@@ -72,6 +72,18 @@ const loginUser = async (userId, password) => {
     throw new AppError('Invalid userId or password', 400);
   }
 
+  await pool.query('DELETE FROM refresh_tokens WHERE user_id = $1 AND expires_at <= NOW()', [user.id]);
+
+  await pool.query(`
+    DELETE FROM refresh_tokens
+    WHERE id IN (
+      SELECT id FROM refresh_tokens
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      OFFSET 4
+    )
+  `, [user.id]);
+
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
@@ -114,8 +126,12 @@ const refreshUserToken = async (refreshToken) => {
     }
 
     if (existingToken.is_revoked || new Date(existingToken.expires_at) <= new Date()) {
-      await client.query('UPDATE refresh_tokens SET is_revoked = TRUE WHERE id = $1', [existingToken.id]);
-      throw new AppError('Unauthorized, refresh token is expired or revoked', 401);
+      if (existingToken.is_revoked) {
+        await client.query('DELETE FROM refresh_tokens WHERE user_id = $1', [existingToken.user_id]);
+      } else {
+        await client.query('DELETE FROM refresh_tokens WHERE id = $1', [existingToken.id]);
+      }
+      throw new AppError('Unauthorized, refresh token is expired or revoked. All sessions terminated for security reasons.', 401);
     }
 
     const userResult = await client.query(
@@ -131,7 +147,11 @@ const refreshUserToken = async (refreshToken) => {
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
 
+    // Keep the old token around but mark it as revoked for reuse detection
     await client.query('UPDATE refresh_tokens SET is_revoked = TRUE WHERE id = $1', [existingToken.id]);
+    
+    // Optional: Clean up any strictly expired tokens in the database to prevent unbounded growth
+    await client.query('DELETE FROM refresh_tokens WHERE expires_at <= NOW()');
 
     await storeRefreshToken(client, {
       userId: user.id,

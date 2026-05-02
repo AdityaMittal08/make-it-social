@@ -54,13 +54,20 @@ const getPostById = async (postId) => {
   return postResult.rows[0];
 }
 
-const getAllPostsFeed = async () => {
+const getAllPostsFeed = async (userId) => {
   const query = `
-    SELECT p.*, u.username, u.first_name, u.last_name
+    SELECT 
+      p.*, 
+      u.username, 
+      u.first_name, 
+      u.last_name,
+      ur.reaction_type AS user_reaction
     FROM posts p
     JOIN users u ON p.owner_id = u.user_id
+    LEFT JOIN reactions ur ON p.post_id = ur.post_id AND ur.user_id = $1
+    ORDER BY p.created_at DESC
   `;
-  const postResult = await pool.query(query);
+  const postResult = await pool.query(query, [userId]);
 
   return postResult.rows;
 }

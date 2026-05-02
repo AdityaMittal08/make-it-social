@@ -47,7 +47,8 @@ const getAllPostsUser = asyncHandler(async (req, res) => {
 });
 
 const getAllPostsFeed = asyncHandler(async(req, res) => {
-  const posts = await postsService.getAllPostsFeed();
+  const userId = req.user.id;
+  const posts = await postsService.getAllPostsFeed(userId);
 
   res.status(200).json({
     status: 'success',

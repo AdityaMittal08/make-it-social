@@ -29,6 +29,48 @@ export function Middle() {
     fetchPosts();
   }, []);
 
+  const handleReaction = async (postId, reactionType) => {
+    try {
+      const response = await postsApi.reactToPost(postId, reactionType);
+      
+      setPosts(currentPosts => currentPosts.map(post => {
+        if (post.post_id === postId) {
+          const action = response.action; 
+          let newLikes = parseInt(post.likes_count || 0);
+          let newDislikes = parseInt(post.dislike_count || post.dislikes_count || 0);
+          const oldReaction = post.user_reaction;
+
+          if (action === 'added') {
+            if (reactionType === 'like') newLikes++;
+            if (reactionType === 'dislike') newDislikes++;
+          } else if (action === 'updated') {
+            if (reactionType === 'like') {
+              newLikes++;
+              newDislikes = Math.max(0, newDislikes - 1);
+            } else if (reactionType === 'dislike') {
+              newDislikes++;
+              newLikes = Math.max(0, newLikes - 1);
+            }
+          } else if (action === 'removed') {
+            if (oldReaction === 'like') newLikes = Math.max(0, newLikes - 1);
+            if (oldReaction === 'dislike') newDislikes = Math.max(0, newDislikes - 1);
+          }
+
+          return { 
+            ...post, 
+            likes_count: newLikes, 
+            dislike_count: newDislikes,
+            dislikes_count: newDislikes,
+            user_reaction: action === 'removed' ? null : reactionType
+          };
+        }
+        return post;
+      }));
+    } catch (error) {
+      console.error("Error reacting to post:", error);
+    }
+  };
+
   if (isLoading) {
     return <div className="flex-1 p-6 pt-1 h-full overflow-y-auto font-display scroll-left text-center font-bold text-xl">Loading posts...</div>;
   }
@@ -62,12 +104,20 @@ export function Middle() {
                 </div>
 
                 <div className="flex flex-wrap gap-4 mt-2">
-                  <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-3 cursor-pointer shadow-[3px_3px_0px_rgba(0,0,0,1)]">
-                    <div className="flex items-center gap-2">
-                      <ThumbsUp className="h-6 w-6" />
-                      <p className="text-lg font-bold">0</p>
+                  <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-3 shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+                    <div 
+                      className={`flex items-center gap-2 cursor-pointer ${post.user_reaction === 'like' ? 'text-blue-600' : ''}`}
+                      onClick={() => handleReaction(post.post_id, 'like')}
+                    >
+                      <ThumbsUp className="h-6 w-6" fill={post.user_reaction === 'like' ? 'currentColor' : 'none'} />
+                      <p className="text-lg font-bold">{post.likes_count || 0}</p>
                     </div>
-                    <ThumbsDown className="h-6 w-6" />
+                    <div 
+                      className={`cursor-pointer ${post.user_reaction === 'dislike' ? 'text-red-600' : ''}`}
+                      onClick={() => handleReaction(post.post_id, 'dislike')}
+                    >
+                      <ThumbsDown className="h-6 w-6" fill={post.user_reaction === 'dislike' ? 'currentColor' : 'none'} />
+                    </div>
                   </div>
                   <div className="border-[2px] border-black bg-[#D9D9D9] rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer shadow-[3px_3px_0px_rgba(0,0,0,1)]">
                     <MessageCircle className="h-6 w-6" />

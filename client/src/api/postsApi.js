@@ -24,5 +24,11 @@ export const postsApi = {
   deletePost: async (postId) => {
     const response = await api.delete(`/posts/${postId}`);
     return response.data;
-  }
+  },
+
+  reactToPost: async (postId, reactionType) => {
+    const response = await api.post(`/reactions/posts/${postId}`, { reactionType });
+    return response.data;
+  },
+
 };

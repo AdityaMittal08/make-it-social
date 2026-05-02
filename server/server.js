@@ -8,7 +8,8 @@ require('dotenv').config();
 
 const authRoutes = require('./src/modules/auth/auth.routes');
 const postsRoutes = require('./src/modules/posts/posts.routes');
-const usersRoutes = require('./src/modules/users/users.routes')
+const usersRoutes = require('./src/modules/users/users.routes');
+const reactionRoutes = require('./src/modules/reactions/reaction.routes');
 const verifyJWT = require('./src/middlewares/verifyJWT');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/reactions', reactionRoutes);
 
 app.get('/api/users', verifyJWT, async (req, res) => {
   try {
