@@ -1,7 +1,6 @@
 const pool = require('../../config/db');
 const AppError = require('../../utils/AppError');
 
-
 const createPost = async (userId, content) => {
   if (!content || typeof content !== 'string') {
     throw new AppError('Post content must be a valid string', 400);
@@ -25,6 +24,10 @@ const createPost = async (userId, content) => {
   
   const result = await pool.query(query, [sanitizedContent, userId]);
 
+  await pool.query(
+    'UPDATE users SET posts_count = posts_count + 1 WHERE user_id = $1',
+    [userId]
+  );
   return result.rows[0];
 };
 
@@ -42,10 +45,26 @@ const deletePost = async (postId, userId) => {
   }
 
   await pool.query('DELETE FROM posts WHERE post_id = $1', [postId]);
+
+  await pool.query(
+    'UPDATE users SET posts_count = posts_count - 1 WHERE user_id = $1 AND posts_count > 0',
+    [userId]
+  );
 };
 
-const getPostById = async (postId) => {
-  const postResult = await pool.query('SELECT * FROM posts WHERE post_id = $1', [postId]);
+const getPostById = async (postId, userId) => {
+  const query = `
+    SELECT 
+      p.*, 
+      u.username, 
+      ur.reaction_type AS user_reaction
+    FROM posts p 
+    JOIN users u ON p.owner_id = u.user_id
+    LEFT JOIN reactions ur ON p.post_id = ur.post_id AND ur.user_id = $2
+    WHERE p.post_id = $1
+  `;
+
+  const postResult = await pool.query(query, [postId, userId]);
 
   if(postResult.rows.length === 0){
     throw new AppError('Post does not exist!', 404);

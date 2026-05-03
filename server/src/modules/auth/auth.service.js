@@ -147,10 +147,8 @@ const refreshUserToken = async (refreshToken) => {
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
 
-    // Keep the old token around but mark it as revoked for reuse detection
     await client.query('UPDATE refresh_tokens SET is_revoked = TRUE WHERE id = $1', [existingToken.id]);
     
-    // Optional: Clean up any strictly expired tokens in the database to prevent unbounded growth
     await client.query('DELETE FROM refresh_tokens WHERE expires_at <= NOW()');
 
     await storeRefreshToken(client, {

@@ -32,7 +32,7 @@ export function LeftSide(){
               <PlusCircle className={getIconClasses("/create")}/>
               <p className={getTextClasses("/create")}>Create</p>
             </Link>
-            <Link to={user ? `/${user.username}` : '#'} className={getLinkContainerClasses(user ? `/${user.username}` : "/profile")}>
+            <Link to={user ? `/${user.username}` : '/login'} className={getLinkContainerClasses(user ? `/${user.username}` : "/profile")}>
               <UserCircle className={getIconClasses(user ? `/${user.username}` : "/profile")}/>
               <p className={getTextClasses(user ? `/${user.username}` : "/profile")}>Profile</p>
             </Link>

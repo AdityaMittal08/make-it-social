@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(verifyJWT);
 
-router.route('/:userId')
+router.route('/:username')
   .get(usersController.fetchUserDetails)
 
 module.exports = router;

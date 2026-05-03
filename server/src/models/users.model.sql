@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS users (
   locked_until TIMESTAMP,
   email_verified BOOLEAN DEFAULT FALSE,
   password_changed_at TIMESTAMP,
+  followers_count INT DEFAULT 0,
+  followings_count INT DEFAULT 0,
+  posts_count INT DEFAULT 0,
   created_at    TIMESTAMP       NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMP       NOT NULL DEFAULT NOW()
 );

@@ -8,6 +8,7 @@ import { CreatePage } from "./components/CreatePage";
 import { LoginPage } from "./components/AuthPage/LoginPage";
 import { SignupPage } from "./components/AuthPage/SignupPage";
 import { ProfilePage } from "./components/ProfilePage";
+import { PostPage } from "./components/PostPage";
 import ProtectedRoutes from "./components/ProtectedAuth/ProtectedRoutes";
 import { useAuth } from "./context/AuthContext";
 
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/explore" element={<ExplorePage />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/create" element={<CreatePage />} />
+          <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/:username" element={<ProfilePage />} />
         </Route>
       </Route>

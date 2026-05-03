@@ -1,26 +1,24 @@
 import { Circle, Edit3 } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import { usersApi } from "../../api/usersApi";
 
-export function ProfileHeader() {
-  const { user } = useAuth();
+export function ProfileHeader({ username }) {
   const [profileData, setProfileData] = useState({
     first_name: "",
     last_name: "",
     username: "",
     bio: "No bio provided yet.",
-    followersCount: 0,
-    followingCount: 0,
-    postsCount: 0,
+    followers_count: 0,
+    followings_count: 0,
+    posts_count: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (user?.id) {
-          const response = await usersApi.fetchUserById(user.id);
+        if (username) {
+          const response = await usersApi.fetchUsername(username);
           if (response?.data?.userData) {
             setProfileData((prev) => ({
               ...prev,
@@ -36,7 +34,7 @@ export function ProfileHeader() {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [username]);
 
   if (isLoading) {
     return <div className="text-center font-bold text-xl mb-8">Loading profile...</div>;
@@ -65,15 +63,15 @@ export function ProfileHeader() {
 
         <div className="flex flex-wrap gap-4">
           <div className="bg-white border-[4px] border-black rounded-[20px] px-6 py-3 shadow-[4px_4px_0px_rgba(0,0,0,1)] w-full sm:w-auto text-center">
-            <p className="text-[32px] font-bold leading-none">{profileData.followersCount}</p>
+            <p className="text-[32px] font-bold leading-none">{profileData.followers_count}</p>
             <p className="text-[18px] font-bold uppercase mt-1">Followers</p>
           </div>
           <div className="bg-white border-[4px] border-black rounded-[20px] px-6 py-3 shadow-[4px_4px_0px_rgba(0,0,0,1)] w-full sm:w-auto text-center">
-            <p className="text-[32px] font-bold leading-none">{profileData.followingCount}</p>
+            <p className="text-[32px] font-bold leading-none">{profileData.followings_count}</p>
             <p className="text-[18px] font-bold uppercase mt-1">Following</p>
           </div>
           <div className="bg-white border-[4px] border-black rounded-[20px] px-6 py-3 shadow-[4px_4px_0px_rgba(0,0,0,1)] w-full sm:w-auto text-center">
-            <p className="text-[32px] font-bold leading-none">{profileData.postsCount}</p>
+            <p className="text-[32px] font-bold leading-none">{profileData.posts_count}</p>
             <p className="text-[18px] font-bold uppercase mt-1">Posts</p>
           </div>
         </div>

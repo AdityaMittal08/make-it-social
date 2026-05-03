@@ -1,12 +1,12 @@
 import { ThumbsUp, ThumbsDown, MessageCircle, Share2, Circle } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { postsApi } from "../../api/postsApi";
 
-export function ProfileActivity() {
-  const { user } = useAuth();
+export function ProfileActivity( {user} ) {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -52,7 +52,10 @@ export function ProfileActivity() {
 
             <hr className="h-px border-t-[3px] border-black bg-black mb-4" />
 
-            <div>
+            <div 
+              className="cursor-pointer hover:bg-black/5 p-2 rounded-xl transition-colors"
+              onClick={() => navigate(`/post/${post.post_id}`)}
+            >
               <p className="text-[28px] font-bold mb-4">{post.content}</p>
             </div>
 
@@ -60,14 +63,17 @@ export function ProfileActivity() {
               <div className="border-[4px] border-black bg-white rounded-full px-5 py-2 flex items-center justify-center gap-4 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-center gap-2">
                   <ThumbsUp className="h-7 w-7" strokeWidth={2.5} />
-                  <p className="text-xl font-bold">0</p>
+                  <p className="text-xl font-bold">{post.likes_count || 0}</p>
                 </div>
                 <div className="w-[4px] h-8 bg-black rounded"></div>
                 <ThumbsDown className="h-7 w-7" strokeWidth={2.5} />
               </div>
-              <div className="border-[4px] border-black bg-[#D9D9D9] rounded-full px-5 py-2 flex items-center justify-center gap-3 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+              <div 
+                onClick={() => navigate(`/post/${post.post_id}`)}
+                className="border-[4px] border-black bg-[#D9D9D9] rounded-full px-5 py-2 flex items-center justify-center gap-3 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:bg-[#c0c0c0] transition-colors"
+              >
                 <MessageCircle className="h-7 w-7" strokeWidth={2.5} />
-                <p className="text-xl font-bold">0</p>
+                <p className="text-xl font-bold">{post.comments_count || 0}</p>
               </div>
               <div className="border-[4px] border-black bg-[#D9D9D9] rounded-full px-5 py-2 flex items-center justify-center gap-3 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)]">
                 <Share2 className="h-7 w-7" strokeWidth={2.5} />
