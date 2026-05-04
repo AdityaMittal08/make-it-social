@@ -9,9 +9,9 @@ export function UserProfile(){
 
   const [profileData, setProfileData] = useState({
       username: "",
-      followersCount: 0,
-      followingCount: 0,
-      postsCount: 0,
+      followers_count: 0,
+      followings_count: 0,
+      posts_count: 0,
     });
     const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +19,7 @@ export function UserProfile(){
     const fetchProfile = async () => {
       try {
         if (user?.id) {
-          const response = await usersApi.fetchUserById(user.id);
+          const response = await usersApi.fetchUserById();
           if (response?.data?.userData) {
             setProfileData((prev) => ({
               ...prev,
@@ -65,15 +65,15 @@ export function UserProfile(){
         <Circle className="h-[50px] w-[50px] m-2 mb-0"/>
         <div className="relative">
           <Link to={`/${user.username}`} className="font-bold text-[36px] m-2 mt-0 mb-0">{user.username}</Link>
-          <p className="absolute top-[50px] font-bold left-[10px]">{profileData.followersCount} followers</p>
+          <p className="absolute top-[50px] font-bold left-[10px]">{profileData.followers_count} followers</p>
         </div>
       </div>
       <div className="flex justify-between">
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">{profileData.followingCount} Following</p>
+          <p className="font-bold text-[20px] leading-[36px]">{profileData.followings_count} Following</p>
         </div>
         <div className="bg-white pl-5 pr-5 rounded-[35px]">
-          <p className="font-bold text-[20px] leading-[36px]">{profileData.postsCount} Posts</p>
+          <p className="font-bold text-[20px] leading-[36px]">{profileData.posts_count} Posts</p>
         </div>
       </div>
       <div className="flex-col m-2">

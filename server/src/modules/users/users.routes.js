@@ -9,4 +9,7 @@ router.use(verifyJWT);
 router.route('/:username')
   .get(usersController.fetchUserDetails)
 
+router.route('/')
+  .get(usersController.fetchUserById)
+
 module.exports = router;

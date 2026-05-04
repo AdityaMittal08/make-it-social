@@ -14,6 +14,20 @@ const fetchUserDetails = async (username) => {
   return userResult.rows[0];
 }
 
+const fetchUserById = async (userId) => {
+  const userResult = await pool.query(
+    'SELECT user_id, username, profile_pic_url, created_at, followings_count, posts_count FROM users WHERE user_id = $1', 
+    [userId]
+  );
+
+  if (userResult.rows.length === 0) {
+    throw new AppError('User not found', 404);
+  }
+
+  return userResult.rows[0];
+}
+
 module.exports = {
   fetchUserDetails,
+  fetchUserById,
 }
