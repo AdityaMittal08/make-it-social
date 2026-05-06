@@ -92,11 +92,25 @@ const getAllPostsFeed = async (userId) => {
 }
 
 const getAllPostsUser = async (userId) => {
-  const query = `SELECT * FROM posts WHERE owner_id = $1`;
+  const query = `SELECT * FROM posts WHERE owner_id = $1 ORDER BY created_at DESC`;
 
   const postResult = await pool.query(query, [userId]);
 
   return postResult.rows;
+}
+
+const getInteractedPostsUser = async (userId, reactionType) => {
+  const query = `
+    SELECT p.*, u.username
+    FROM posts p
+    JOIN reactions r ON p.post_id = r.post_id
+    JOIN users u ON p.owner_id = u.user_id
+    WHERE r.user_id = $1 AND r.reaction_type = $2
+    ORDER BY r.created_at DESC
+  `;
+
+  const result = await pool.query(query, [userId, reactionType]);
+  return result.rows;
 }
 
 module.exports = {
@@ -104,5 +118,6 @@ module.exports = {
   deletePost,
   getAllPostsFeed,
   getAllPostsUser,
+  getInteractedPostsUser,
   getPostById
 };

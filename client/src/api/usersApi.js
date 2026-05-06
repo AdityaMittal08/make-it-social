@@ -9,5 +9,10 @@ export const usersApi = {
   fetchUserById: async() => {
     const response = await api.get(`/users/`);
     return response.data;
+  },
+
+  fetchAllUsersExplore: async () => {
+    const response = await api.get('/users/all/explore');
+    return response.data;
   }
 };

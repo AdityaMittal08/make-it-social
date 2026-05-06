@@ -12,7 +12,8 @@ const usersRoutes = require('./src/modules/users/users.routes');
 const reactionRoutes = require('./src/modules/reactions/reaction.routes');
 const commentsRoutes = require('./src/modules/comments/comments.routes');
 const newsRoutes = require('./src/modules/news/news.routes');
-const worker = require('./src/modules/news/news.worker')
+const followersRoutes = require('./src/modules/followers/followers.routes');
+const worker = './src/modules/news/news.worker'
 const verifyJWT = require('./src/middlewares/verifyJWT');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/reactions', reactionRoutes);
 app.use('/api/comments', commentsRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/follows', followersRoutes);
 
 app.get('/api/users', verifyJWT, async (req, res) => {
   try {

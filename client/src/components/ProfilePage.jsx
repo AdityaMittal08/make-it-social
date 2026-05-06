@@ -3,10 +3,12 @@ import { ProfileTabs } from "./ProfilePage/ProfileTabs";
 import { ProfileActivity } from "./ProfilePage/ProfileActivity";
 import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 export function ProfilePage() {
   const { username } = useParams();
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("Posts");
 
   const isOwnProfile = user?.username === username;
 
@@ -19,8 +21,8 @@ export function ProfilePage() {
             <hr className="my-4 h-px border-t-4 border-black bg-black" />
             
             <ProfileHeader username={username} />
-            <ProfileTabs />
-            <ProfileActivity user={user} />
+            <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <ProfileActivity user={user} activeTab={activeTab} />
           </>
         ) : (
           <ProfileHeader username={username} />

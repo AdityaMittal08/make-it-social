@@ -27,7 +27,19 @@ const fetchUserById = asyncHandler(async(req, res) => {
   })
 })
 
+const fetchAllUsers = asyncHandler(async(req, res) => {
+  const users = await userProfileDetails.fetchAllUsers();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      users
+    }
+  })
+})
+
 module.exports = {
   fetchUserDetails,
   fetchUserById,
+  fetchAllUsers,
 }

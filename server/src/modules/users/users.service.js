@@ -27,7 +27,19 @@ const fetchUserById = async (userId) => {
   return userResult.rows[0];
 }
 
+const fetchAllUsers = async () => {
+  const query = `
+    SELECT user_id, username, first_name, last_name, followers_count, followings_count
+    FROM users 
+    ORDER BY created_at DESC 
+    LIMIT 20
+  `;
+  const result = await pool.query(query);
+  return result.rows;
+}
+
 module.exports = {
   fetchUserDetails,
   fetchUserById,
+  fetchAllUsers
 }

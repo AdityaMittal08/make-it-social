@@ -49,6 +49,26 @@ const getAllPostsUser = asyncHandler(async (req, res) => {
   });
 });
 
+const getLikedPostsUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const posts = await postsService.getInteractedPostsUser(userId, 'like');
+
+  res.status(200).json({
+    status: 'success',
+    data: { posts }
+  });
+});
+
+const getDislikedPostsUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const posts = await postsService.getInteractedPostsUser(userId, 'dislike');
+
+  res.status(200).json({
+    status: 'success',
+    data: { posts }
+  });
+});
+
 const getAllPostsFeed = asyncHandler(async(req, res) => {
   const userId = req.user.id;
   const posts = await postsService.getAllPostsFeed(userId);
@@ -65,5 +85,7 @@ module.exports = {
   deletePost,
   getPostById,
   getAllPostsUser,
+  getLikedPostsUser,
+  getDislikedPostsUser,
   getAllPostsFeed
 };

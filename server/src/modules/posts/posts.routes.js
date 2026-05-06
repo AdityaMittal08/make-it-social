@@ -10,6 +10,13 @@ router.route('/')
   .get(postsController.getAllPostsUser)
   .post(postsController.createPost)
 
+
+router.route('/liked')
+  .get(postsController.getLikedPostsUser)
+
+router.route('/disliked')
+  .get(postsController.getDislikedPostsUser)
+
 router.route('/home')
   .get(postsController.getAllPostsFeed)
   
@@ -17,4 +24,4 @@ router.route('/:postId')
   .get(postsController.getPostById)
   .delete(postsController.deletePost);
 
-module.exports = router;
+module.exports = router;module.exports = router;

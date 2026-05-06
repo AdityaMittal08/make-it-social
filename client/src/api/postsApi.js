@@ -11,6 +11,16 @@ export const postsApi = {
     return response.data;
   },
 
+  getLikedPostsUser: async () => {
+    const response = await api.get('/posts/liked');
+    return response.data;
+  },
+
+  getDislikedPostsUser: async () => {
+    const response = await api.get('/posts/disliked');
+    return response.data;
+  },
+
   getAllPostsFeed: async () => {
     const response = await api.get('/posts/home');
     return response.data;

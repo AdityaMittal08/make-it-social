@@ -30,8 +30,6 @@ const fetchPaginatedNews = async (limit = 5, cursor = null) => {
 const syncNewsFromAPI = async () => {
   const CURRENTS_API_URL = 'https://api.currentsapi.services/v1/latest-news';
 
-  console.log("Worker: Fetching fresh news from Currents API...");
-
   const apiResponse = await axios.get(CURRENTS_API_URL, {
     params: { page_size: 30 },
     headers: { Authorization: process.env.CURRENTS_API_KEY },
@@ -59,7 +57,13 @@ const syncNewsFromAPI = async () => {
   console.log(`Worker: Successfully synced articles to database.`);
 };
 
+const cleanupOldNews = async () => {
+  const cleanupQuery = `DELETE FROM news_articles WHERE published_at < NOW() - INTERVAL '24 hours'`;
+  await pool.query(cleanupQuery);
+};
+
 module.exports = {
   fetchPaginatedNews,
   syncNewsFromAPI,
+  cleanupOldNews,
 };
