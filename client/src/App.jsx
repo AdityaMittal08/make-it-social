@@ -35,12 +35,17 @@ export default function App() {
 
   return (
     <Routes>
+      {!isAuthenticated && (
+        <Route path="/" element={<GuestMainPage />} />
+      )}
+
       <Route element={<MainLayout />}>
-        <Route 
-          path="/" 
-          element={isAuthenticated ? <MainPage /> : <GuestMainPage />} 
-        />
+        {isAuthenticated && (
+          <Route path="/" element={<MainPage />} />
+        )}
+        
         <Route path="/explore" element={<ExplorePage />} />
+        
         <Route element={<ProtectedRoutes />}>
           <Route path="/create" element={<CreatePage />} />
           <Route path="/post/:postId" element={<PostPage />} />
